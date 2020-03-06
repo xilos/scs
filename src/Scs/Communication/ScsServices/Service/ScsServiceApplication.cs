@@ -28,6 +28,18 @@ namespace Hik.Communication.ScsServices.Service
 
         #endregion
 
+        #region Public properties
+
+        /// <summary>
+        /// Timeout value when invoking a service method.
+        /// If timeout occurs before end of remote method call, an exception is thrown.
+        /// Use -1 for no timeout (wait indefinite).
+        /// Default value: 60000 (1 minute).
+        /// </summary>
+        public int Timeout { get; set; }
+
+        #endregion
+
         #region Private fields
 
         /// <summary>
@@ -142,7 +154,10 @@ namespace Hik.Communication.ScsServices.Service
         /// <param name="e">Event arguments</param>
         private void ScsServer_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            var requestReplyMessenger = new RequestReplyMessenger<IScsServerClient>(e.Client);
+            var requestReplyMessenger = new RequestReplyMessenger<IScsServerClient>(e.Client)
+            {
+                Timeout = Timeout
+            };
             requestReplyMessenger.MessageReceived += Client_MessageReceived;
             requestReplyMessenger.Start();
 
